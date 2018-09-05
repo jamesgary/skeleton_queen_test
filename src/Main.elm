@@ -22,15 +22,33 @@ main =
 
 
 type alias Model =
-    { skelAmt : Int
-    , manaAmt : Float
+    { manaAmt : Float
+    , graveyardSkelAmt : Int
+    , forestSkelAmt : Int
+
+    --, mineSkelAmt : Int
+    --, riverSkelAmt : Int
     }
+
+
+type Location
+    = Graveyard
+    | Forest
+
+
+
+--| Mine
+--| River
 
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( { skelAmt = 0
-      , manaAmt = 100
+    ( { manaAmt = 100
+      , graveyardSkelAmt = 0
+      , forestSkelAmt = 0
+
+      --, mineSkelAmt = 0
+      --, riverSkelAmt = 0
       }
     , Cmd.none
     )
@@ -42,6 +60,7 @@ init _ =
 
 type Msg
     = SummonSkel
+    | SendSkelToForest
     | Tick Float
 
 
@@ -50,8 +69,14 @@ update msg model =
     ( case msg of
         SummonSkel ->
             { model
-                | skelAmt = model.skelAmt + 1
+                | graveyardSkelAmt = model.graveyardSkelAmt + 1
                 , manaAmt = model.manaAmt - 20
+            }
+
+        SendSkelToForest ->
+            { model
+                | graveyardSkelAmt = model.graveyardSkelAmt - 1
+                , forestSkelAmt = model.forestSkelAmt + 1
             }
 
         Tick delta ->
@@ -71,10 +96,19 @@ view model =
     div []
         [ text ("Mana: " ++ String.fromInt (round model.manaAmt))
         , div [] []
-        , text ("Skeletons: " ++ String.fromInt model.skelAmt)
+        , text ("Skeletons (total): " ++ String.fromInt (totalSkels model))
         , div [] []
+        , text ("- In Graveyard: " ++ String.fromInt model.graveyardSkelAmt ++ " ")
         , button [ onClick SummonSkel, disabled (model.manaAmt < 20) ] [ text "Summon Skeleton (20 mana)" ]
+        , div [] []
+        , text ("- In Forest: " ++ String.fromInt model.forestSkelAmt)
+        , button [ onClick SendSkelToForest, disabled (model.graveyardSkelAmt < 1) ] [ text "Send (1) Skeleton to Forest" ]
         ]
+
+
+totalSkels : Model -> Int
+totalSkels model =
+    model.graveyardSkelAmt + model.forestSkelAmt
 
 
 subscriptions : Model -> Sub Msg
