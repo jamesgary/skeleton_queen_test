@@ -29,11 +29,11 @@ init _ =
       , visibleInv =
             Resources.init False
                 |> (\inv -> { inv | mana = True })
-      , graveyardSkelAmt = 0
-      , forestSkelAmt = 0
-      , mineSkelAmt = 0
-      , riverSkelAmt = 0
-      , altarLvl = 1
+      , graveyardSkelAmt = 1
+      , forestSkelAmt = 2
+      , mineSkelAmt = 3
+      , riverSkelAmt = 4
+      , altarLvl = 2
       }
     , Cmd.none
     )
@@ -64,6 +64,24 @@ update msg model =
             { model
                 | graveyardSkelAmt = model.graveyardSkelAmt - 1
                 , riverSkelAmt = model.riverSkelAmt + 1
+            }
+
+        RecallFromForest ->
+            { model
+                | forestSkelAmt = model.forestSkelAmt - 1
+                , graveyardSkelAmt = model.graveyardSkelAmt + 1
+            }
+
+        RecallFromMine ->
+            { model
+                | mineSkelAmt = model.mineSkelAmt - 1
+                , graveyardSkelAmt = model.graveyardSkelAmt + 1
+            }
+
+        RecallFromRiver ->
+            { model
+                | riverSkelAmt = model.riverSkelAmt - 1
+                , graveyardSkelAmt = model.graveyardSkelAmt + 1
             }
 
         UpgradeAltar ->

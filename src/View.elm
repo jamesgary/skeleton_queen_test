@@ -46,9 +46,9 @@ view model =
             , div [] []
             , if totalSkels model > 0 then
                 div []
-                    [ viewLocation "Forest" model.forestSkelAmt SendSkelToForest model.graveyardSkelAmt
-                    , viewLocation "Mine" model.mineSkelAmt SendSkelToMine model.graveyardSkelAmt
-                    , viewLocation "River" model.riverSkelAmt SendSkelToRiver model.graveyardSkelAmt
+                    [ viewLocation "Forest" model.forestSkelAmt SendSkelToForest model.graveyardSkelAmt model.altarLvl RecallFromForest
+                    , viewLocation "Mine" model.mineSkelAmt SendSkelToMine model.graveyardSkelAmt model.altarLvl RecallFromMine
+                    , viewLocation "River" model.riverSkelAmt SendSkelToRiver model.graveyardSkelAmt model.altarLvl RecallFromRiver
                     ]
               else
                 text ""
@@ -76,9 +76,13 @@ viewResource resource amt isVisible =
         text ""
 
 
-viewLocation : String -> Int -> Msg -> Int -> Html Msg
-viewLocation locationName locationSkelAmt sendMsg graveyardSkelAmt =
+viewLocation : String -> Int -> Msg -> Int -> Int -> Msg -> Html Msg
+viewLocation locationName locationSkelAmt sendMsg graveyardSkelAmt altarLvl recallMsg =
     div []
         [ text ("- In " ++ locationName ++ ": " ++ String.fromInt locationSkelAmt)
         , button [ onClick sendMsg, disabled (graveyardSkelAmt < 1) ] [ text ("Send (1) Skeleton to " ++ locationName) ]
+        , if altarLvl >= 2 then
+            button [ onClick recallMsg, disabled (locationSkelAmt <= 0) ] [ text "Recall (1)" ]
+          else
+            text ""
         ]

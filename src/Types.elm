@@ -26,6 +26,9 @@ type Msg
     | SendSkelToForest
     | SendSkelToMine
     | SendSkelToRiver
+    | RecallFromForest
+    | RecallFromMine
+    | RecallFromRiver
     | UpgradeAltar
     | Tick Float
 
