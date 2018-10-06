@@ -3,6 +3,7 @@ module Main exposing (main)
 import Browser
 import Browser.Events
 import Config exposing (..)
+import Locations exposing (..)
 import Resources exposing (..)
 import Time exposing (Posix)
 import Types exposing (..)
@@ -29,10 +30,8 @@ init _ =
       , visibleInv =
             Resources.init False
                 |> (\inv -> { inv | mana = True })
-      , graveyardSkelAmt = 1
-      , forestSkelAmt = 2
-      , mineSkelAmt = 3
-      , riverSkelAmt = 4
+      , locSkels =
+            Locations.init 0
       , altarLvl = 2
       }
     , Cmd.none
@@ -40,62 +39,27 @@ init _ =
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
+update msg ({ locSkels } as model) =
     ( case msg of
         SummonSkel ->
             { model
-                | graveyardSkelAmt = model.graveyardSkelAmt + 1
+                | locSkels = { locSkels | graveyard = locSkels.graveyard + 1 }
                 , inv = deduct model.inv cfg.summonSkelCost
             }
 
         SendSkelFromTo fromLoc toLoc ->
-            let
-                deductedModel =
-                    case fromLoc of
-                        Graveyard ->
-                            { model | graveyardSkelAmt = model.graveyardSkelAmt - 1 }
-
-                        Forest ->
-                            { model | forestSkelAmt = model.forestSkelAmt - 1 }
-
-                        Mine ->
-                            { model | mineSkelAmt = model.mineSkelAmt - 1 }
-
-                        River ->
-                            { model | riverSkelAmt = model.riverSkelAmt - 1 }
-
-                wholeModel =
-                    case toLoc of
-                        Graveyard ->
-                            { deductedModel | graveyardSkelAmt = deductedModel.graveyardSkelAmt + 1 }
-
-                        Forest ->
-                            { deductedModel | forestSkelAmt = deductedModel.forestSkelAmt + 1 }
-
-                        Mine ->
-                            { deductedModel | mineSkelAmt = deductedModel.mineSkelAmt + 1 }
-
-                        River ->
-                            { deductedModel | riverSkelAmt = deductedModel.riverSkelAmt + 1 }
-            in
-            wholeModel
-
-        RecallFromForest ->
             { model
-                | forestSkelAmt = model.forestSkelAmt - 1
-                , graveyardSkelAmt = model.graveyardSkelAmt + 1
-            }
-
-        RecallFromMine ->
-            { model
-                | mineSkelAmt = model.mineSkelAmt - 1
-                , graveyardSkelAmt = model.graveyardSkelAmt + 1
-            }
-
-        RecallFromRiver ->
-            { model
-                | riverSkelAmt = model.riverSkelAmt - 1
-                , graveyardSkelAmt = model.graveyardSkelAmt + 1
+                | locSkels =
+                    Locations.map
+                        (\loc skelAmt ->
+                            if loc == fromLoc then
+                                skelAmt - 1
+                            else if loc == toLoc then
+                                skelAmt + 1
+                            else
+                                skelAmt
+                        )
+                        locSkels
             }
 
         UpgradeAltar ->
@@ -106,9 +70,9 @@ update msg model =
                 | inv =
                     add model.inv
                         [ ( Mana, delta * cfg.manaRegenRate )
-                        , ( Lumber, delta * cfg.lumberCoef * toFloat model.forestSkelAmt )
-                        , ( Iron, delta * cfg.ironCoef * toFloat model.mineSkelAmt )
-                        , ( Water, delta * cfg.waterCoef * toFloat model.riverSkelAmt )
+                        , ( Lumber, delta * cfg.lumberCoef * toFloat model.locSkels.forest )
+                        , ( Iron, delta * cfg.ironCoef * toFloat model.locSkels.mine )
+                        , ( Water, delta * cfg.waterCoef * toFloat model.locSkels.river )
                         ]
                 , visibleInv =
                     Resources.map2

@@ -5,6 +5,7 @@ import Dict exposing (Dict)
 import Html exposing (Html, button, div, text)
 import Html.Attributes exposing (disabled, style)
 import Html.Events exposing (onClick)
+import Locations exposing (..)
 import Resources exposing (..)
 import Types exposing (..)
 
@@ -41,14 +42,14 @@ view model =
                 ]
             , text ("Skeletons (total): " ++ String.fromInt (totalSkels model))
             , div [] []
-            , text ("- In Graveyard: " ++ String.fromInt model.graveyardSkelAmt ++ " ")
+            , text ("- In Graveyard: " ++ String.fromInt model.locSkels.graveyard ++ " ")
             , button [ onClick SummonSkel, disabled (model.inv.mana < 20) ] [ text "Summon Skeleton (20 mana)" ]
             , div [] []
             , if totalSkels model > 0 then
                 div []
-                    [ viewLocation "Forest" model.forestSkelAmt Forest model.graveyardSkelAmt model.altarLvl
-                    , viewLocation "Mine" model.mineSkelAmt Mine model.graveyardSkelAmt model.altarLvl
-                    , viewLocation "River" model.riverSkelAmt River model.graveyardSkelAmt model.altarLvl
+                    [ viewLocation "Forest" model.locSkels.forest Forest model.locSkels.graveyard model.altarLvl
+                    , viewLocation "Mine" model.locSkels.mine Mine model.locSkels.graveyard model.altarLvl
+                    , viewLocation "River" model.locSkels.river River model.locSkels.graveyard model.altarLvl
                     ]
               else
                 text ""
