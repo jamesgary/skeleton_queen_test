@@ -1,6 +1,7 @@
 module View exposing (view)
 
 import Config exposing (..)
+import Dict exposing (Dict)
 import Html exposing (Html, button, div, text)
 import Html.Attributes exposing (disabled, style)
 import Html.Events exposing (onClick)
@@ -24,8 +25,17 @@ view model =
                 , style "text-align" "center"
                 ]
                 [ text ("Altar (Lvl " ++ String.fromInt model.altarLvl ++ ")")
-                , if model.inv.lumber > 0 && model.inv.iron > 0 && model.inv.water > 0 then
-                    button [ disabled (not (canAfford model.inv cfg.altarCost)) ] [ text "Upgrade" ]
+                , if model.inv.lumber > 0 && model.inv.iron > 0 && model.inv.water > 0 && model.altarLvl < 4 then
+                    button
+                        [ disabled
+                            (not
+                                (canAfford model.inv
+                                    (nextAltarCost model.altarLvl cfg.altarCosts)
+                                )
+                            )
+                        , onClick UpgradeAltar
+                        ]
+                        [ text "Upgrade" ]
                   else
                     text ""
                 ]
@@ -44,6 +54,16 @@ view model =
                 text ""
             ]
         ]
+
+
+nextAltarCost : Int -> Dict Int Cost -> Cost
+nextAltarCost currentLvl altarCosts =
+    case Dict.get (currentLvl + 1) altarCosts of
+        Just cost ->
+            cost
+
+        Nothing ->
+            Debug.todo ("Couldn't find altar cost for lvl " ++ String.fromInt (currentLvl + 1))
 
 
 viewResource : Resource -> Float -> Bool -> Html Msg

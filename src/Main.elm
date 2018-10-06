@@ -66,6 +66,9 @@ update msg model =
                 , riverSkelAmt = model.riverSkelAmt + 1
             }
 
+        UpgradeAltar ->
+            { model | altarLvl = model.altarLvl + 1 }
+
         Tick delta ->
             { model
                 | inv =
