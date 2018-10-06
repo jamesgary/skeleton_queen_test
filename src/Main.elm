@@ -48,23 +48,37 @@ update msg model =
                 , inv = deduct model.inv cfg.summonSkelCost
             }
 
-        SendSkelToForest ->
-            { model
-                | graveyardSkelAmt = model.graveyardSkelAmt - 1
-                , forestSkelAmt = model.forestSkelAmt + 1
-            }
+        SendSkelFromTo fromLoc toLoc ->
+            let
+                deductedModel =
+                    case fromLoc of
+                        Graveyard ->
+                            { model | graveyardSkelAmt = model.graveyardSkelAmt - 1 }
 
-        SendSkelToMine ->
-            { model
-                | graveyardSkelAmt = model.graveyardSkelAmt - 1
-                , mineSkelAmt = model.mineSkelAmt + 1
-            }
+                        Forest ->
+                            { model | forestSkelAmt = model.forestSkelAmt - 1 }
 
-        SendSkelToRiver ->
-            { model
-                | graveyardSkelAmt = model.graveyardSkelAmt - 1
-                , riverSkelAmt = model.riverSkelAmt + 1
-            }
+                        Mine ->
+                            { model | mineSkelAmt = model.mineSkelAmt - 1 }
+
+                        River ->
+                            { model | riverSkelAmt = model.riverSkelAmt - 1 }
+
+                wholeModel =
+                    case toLoc of
+                        Graveyard ->
+                            { deductedModel | graveyardSkelAmt = deductedModel.graveyardSkelAmt + 1 }
+
+                        Forest ->
+                            { deductedModel | forestSkelAmt = deductedModel.forestSkelAmt + 1 }
+
+                        Mine ->
+                            { deductedModel | mineSkelAmt = deductedModel.mineSkelAmt + 1 }
+
+                        River ->
+                            { deductedModel | riverSkelAmt = deductedModel.riverSkelAmt + 1 }
+            in
+            wholeModel
 
         RecallFromForest ->
             { model

@@ -23,9 +23,7 @@ type Location
 
 type Msg
     = SummonSkel
-    | SendSkelToForest
-    | SendSkelToMine
-    | SendSkelToRiver
+    | SendSkelFromTo Location Location
     | RecallFromForest
     | RecallFromMine
     | RecallFromRiver

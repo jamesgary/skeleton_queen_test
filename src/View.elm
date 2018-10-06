@@ -46,9 +46,9 @@ view model =
             , div [] []
             , if totalSkels model > 0 then
                 div []
-                    [ viewLocation "Forest" model.forestSkelAmt SendSkelToForest model.graveyardSkelAmt model.altarLvl RecallFromForest
-                    , viewLocation "Mine" model.mineSkelAmt SendSkelToMine model.graveyardSkelAmt model.altarLvl RecallFromMine
-                    , viewLocation "River" model.riverSkelAmt SendSkelToRiver model.graveyardSkelAmt model.altarLvl RecallFromRiver
+                    [ viewLocation "Forest" model.forestSkelAmt Forest model.graveyardSkelAmt model.altarLvl
+                    , viewLocation "Mine" model.mineSkelAmt Mine model.graveyardSkelAmt model.altarLvl
+                    , viewLocation "River" model.riverSkelAmt River model.graveyardSkelAmt model.altarLvl
                     ]
               else
                 text ""
@@ -76,13 +76,21 @@ viewResource resource amt isVisible =
         text ""
 
 
-viewLocation : String -> Int -> Msg -> Int -> Int -> Msg -> Html Msg
-viewLocation locationName locationSkelAmt sendMsg graveyardSkelAmt altarLvl recallMsg =
+viewLocation : String -> Int -> Location -> Int -> Int -> Html Msg
+viewLocation locationName locationSkelAmt loc graveyardSkelAmt altarLvl =
     div []
         [ text ("- In " ++ locationName ++ ": " ++ String.fromInt locationSkelAmt)
-        , button [ onClick sendMsg, disabled (graveyardSkelAmt < 1) ] [ text ("Send (1) Skeleton to " ++ locationName) ]
+        , button
+            [ onClick (SendSkelFromTo Graveyard loc)
+            , disabled (graveyardSkelAmt < 1)
+            ]
+            [ text ("Send (1) Skeleton to " ++ locationName) ]
         , if altarLvl >= 2 then
-            button [ onClick recallMsg, disabled (locationSkelAmt <= 0) ] [ text "Recall (1)" ]
+            button
+                [ onClick (SendSkelFromTo loc Graveyard)
+                , disabled (locationSkelAmt <= 0)
+                ]
+                [ text "Recall (1)" ]
           else
             text ""
         ]
