@@ -10,6 +10,7 @@ module Resources
         , init
         , map
         , map2
+        , toString
         )
 
 
@@ -121,3 +122,19 @@ map2 func resA resB =
     , lumber = func Lumber resA.lumber resB.lumber
     , water = func Water resA.water resB.water
     }
+
+
+toString : Resource -> String
+toString res =
+    case res of
+        Mana ->
+            "Mana"
+
+        Iron ->
+            "Iron"
+
+        Lumber ->
+            "Lumber"
+
+        Water ->
+            "Water"

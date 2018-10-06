@@ -15,19 +15,10 @@ view model =
         , style "width" "600px"
         ]
         [ div [ style "width" "200px" ]
-            [ if model.visibleInv.mana then
-                text ("Mana: " ++ String.fromInt (round model.inv.mana))
-              else
-                text ""
-            , div [] []
-            , if model.visibleInv.lumber then
-                text ("Lumber: " ++ String.fromInt (round model.inv.lumber))
-              else
-                text ""
-            , div [] []
-            , text ("Iron: " ++ String.fromInt (round model.inv.iron))
-            , div [] []
-            , text ("Water: " ++ String.fromInt (round model.inv.water))
+            [ viewResource Mana model.inv.mana model.visibleInv.mana
+            , viewResource Lumber model.inv.lumber model.visibleInv.lumber
+            , viewResource Iron model.inv.iron model.visibleInv.iron
+            , viewResource Water model.inv.water model.visibleInv.water
             ]
         , div [ style "background-color" "#ddd", style "padding" "10px" ]
             [ div
@@ -55,6 +46,16 @@ view model =
                 text ""
             ]
         ]
+
+
+viewResource : Resource -> Float -> Bool -> Html Msg
+viewResource resource amt isVisible =
+    if isVisible then
+        div []
+            [ text (Resources.toString resource ++ ": " ++ String.fromInt (round amt))
+            ]
+    else
+        text ""
 
 
 viewLocation : String -> Int -> Msg -> Int -> Html Msg
