@@ -26,6 +26,9 @@ init _ =
             , lumber = 0
             , water = 0
             }
+      , visibleInv =
+            Resources.init False
+                |> (\inv -> { inv | mana = True })
       , graveyardSkelAmt = 0
       , forestSkelAmt = 0
       , mineSkelAmt = 0
@@ -72,6 +75,16 @@ update msg model =
                         , ( Iron, delta * cfg.ironCoef * toFloat model.mineSkelAmt )
                         , ( Water, delta * cfg.waterCoef * toFloat model.riverSkelAmt )
                         ]
+                , visibleInv =
+                    Resources.map2
+                        (\res amt isVisible ->
+                            if amt > 0 then
+                                True
+                            else
+                                isVisible
+                        )
+                        model.inv
+                        model.visibleInv
             }
     , Cmd.none
     )

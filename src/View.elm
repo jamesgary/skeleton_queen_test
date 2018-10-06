@@ -15,9 +15,15 @@ view model =
         , style "width" "600px"
         ]
         [ div [ style "width" "200px" ]
-            [ text ("Mana: " ++ String.fromInt (round model.inv.mana))
+            [ if model.visibleInv.mana then
+                text ("Mana: " ++ String.fromInt (round model.inv.mana))
+              else
+                text ""
             , div [] []
-            , text ("Lumber: " ++ String.fromInt (round model.inv.lumber))
+            , if model.visibleInv.lumber then
+                text ("Lumber: " ++ String.fromInt (round model.inv.lumber))
+              else
+                text ""
             , div [] []
             , text ("Iron: " ++ String.fromInt (round model.inv.iron))
             , div [] []

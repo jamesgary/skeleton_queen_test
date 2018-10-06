@@ -1,4 +1,16 @@
-module Resources exposing (Cost, Inventory, Resource(..), add, canAfford, deduct)
+module Resources
+    exposing
+        ( Cost
+        , Inventory
+        , Resource(..)
+        , ResourcesHandler
+        , add
+        , canAfford
+        , deduct
+        , init
+        , map
+        , map2
+        )
 
 
 type Resource
@@ -13,11 +25,7 @@ allResources =
 
 
 type alias Inventory =
-    { mana : Float
-    , iron : Float
-    , lumber : Float
-    , water : Float
-    }
+    ResourcesHandler Float
 
 
 type alias Cost =
@@ -78,3 +86,38 @@ foldlDeductHelper ( resource, amt ) inv =
 
         Water ->
             { inv | water = inv.water - amt }
+
+
+type alias ResourcesHandler a =
+    { mana : a
+    , iron : a
+    , lumber : a
+    , water : a
+    }
+
+
+init : a -> ResourcesHandler a
+init val =
+    { mana = val
+    , iron = val
+    , lumber = val
+    , water = val
+    }
+
+
+map : (Resource -> a -> b) -> ResourcesHandler a -> ResourcesHandler b
+map func resources =
+    { mana = func Mana resources.mana
+    , iron = func Iron resources.iron
+    , lumber = func Lumber resources.lumber
+    , water = func Water resources.water
+    }
+
+
+map2 : (Resource -> a -> b -> c) -> ResourcesHandler a -> ResourcesHandler b -> ResourcesHandler c
+map2 func resA resB =
+    { mana = func Mana resA.mana resB.mana
+    , iron = func Iron resA.iron resB.iron
+    , lumber = func Lumber resA.lumber resB.lumber
+    , water = func Water resA.water resB.water
+    }

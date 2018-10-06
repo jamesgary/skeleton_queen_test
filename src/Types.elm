@@ -5,6 +5,7 @@ import Resources exposing (..)
 
 type alias Model =
     { inv : Inventory
+    , visibleInv : ResourcesHandler Bool
     , graveyardSkelAmt : Int
     , forestSkelAmt : Int
     , mineSkelAmt : Int
