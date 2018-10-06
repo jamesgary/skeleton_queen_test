@@ -30,7 +30,7 @@ view model =
                 ]
                 [ text ("Altar (Lvl " ++ String.fromInt model.altarLvl ++ ")")
                 , if model.inv.lumber > 0 && model.inv.iron > 0 && model.inv.water > 0 then
-                    button [ disabled (not (canAfford model.inv altarCost)) ] [ text "Upgrade" ]
+                    button [ disabled (not (canAfford model.inv cfg.altarCost)) ] [ text "Upgrade" ]
                   else
                     text ""
                 ]

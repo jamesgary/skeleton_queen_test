@@ -42,7 +42,7 @@ update msg model =
         SummonSkel ->
             { model
                 | graveyardSkelAmt = model.graveyardSkelAmt + 1
-                , inv = deduct model.inv summonSkelCost
+                , inv = deduct model.inv cfg.summonSkelCost
             }
 
         SendSkelToForest ->

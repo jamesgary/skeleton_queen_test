@@ -13,15 +13,11 @@ cfg =
         , lumber = 1000
         , water = 1000
         }
+    , summonSkelCost =
+        [ ( Mana, 20 ) ]
+    , altarCost =
+        [ ( Iron, 1000 )
+        , ( Lumber, 1000 )
+        , ( Water, 1000 )
+        ]
     }
-
-
-summonSkelCost =
-    [ ( Mana, 20 ) ]
-
-
-altarCost =
-    [ ( Iron, 1000 )
-    , ( Lumber, 1000 )
-    , ( Water, 1000 )
-    ]
