@@ -15,11 +15,9 @@ view model =
         , style "width" "600px"
         ]
         [ div [ style "width" "200px" ]
-            [ viewResource Mana model.inv.mana model.visibleInv.mana
-            , viewResource Lumber model.inv.lumber model.visibleInv.lumber
-            , viewResource Iron model.inv.iron model.visibleInv.iron
-            , viewResource Water model.inv.water model.visibleInv.water
-            ]
+            (Resources.map2 viewResource model.inv model.visibleInv
+                |> Resources.values
+            )
         , div [ style "background-color" "#ddd", style "padding" "10px" ]
             [ div
                 [ style "font-size" "20px"

@@ -11,6 +11,7 @@ module Resources
         , map
         , map2
         , toString
+        , values
         )
 
 
@@ -138,3 +139,12 @@ toString res =
 
         Water ->
             "Water"
+
+
+values : ResourcesHandler a -> List a
+values handler =
+    [ handler.mana
+    , handler.iron
+    , handler.lumber
+    , handler.water
+    ]
